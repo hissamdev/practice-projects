@@ -1,11 +1,7 @@
 import express from "express";
+import productController from "../controllers/productController.js";
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.status(201).json({
-        success: true,
-        message: "Request received successfully",
-    });
-});
+router.post("/products/create", productController.createProducts);
 
 export default router;

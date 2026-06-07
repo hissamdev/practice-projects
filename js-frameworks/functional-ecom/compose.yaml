@@ -1,0 +1,16 @@
+services:
+    postgres:
+        image: postgres:17
+        container_name: functional-ecom
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password123
+            POSTGRES_DB: express-ecom
+        ports:
+            - "5433:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql
+
+volumes:
+    postgres_data:

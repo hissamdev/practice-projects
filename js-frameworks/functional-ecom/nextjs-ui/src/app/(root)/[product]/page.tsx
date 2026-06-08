@@ -18,9 +18,10 @@ export default async function Page({
     if (!res.ok) {
         return console.error(res.status, res.statusText);
     }
-    const receivedProduct = await res.json();
+    const parsed = await res.json();
+    const receivedProduct: Products[0] = parsed.data[0];
     const { id, heading, description, price, url, content }: Products[0] =
-        receivedProduct.data[0];
+        parsed.data[0];
 
     return (
         <section>
@@ -29,7 +30,7 @@ export default async function Page({
                 <div>
                     <h1>{heading}</h1>
                     <p>{description}</p>
-                    <AddToCart id={id} />
+                    <AddToCart product={receivedProduct} />
                 </div>
             </main>
         </section>

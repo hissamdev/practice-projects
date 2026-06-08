@@ -1,5 +1,8 @@
 "use client";
 
+import { Products } from "../types/productTypes";
+import { useCartStore } from "./zustand/cart-store";
+
 export default function Cart() {
     return (
         <div className="w-120 h-80">
@@ -9,11 +12,10 @@ export default function Cart() {
 }
 
 type ButtonProps = {
-    id: string;
+    product: Products[0];
 };
-export function AddToCart({ id }: ButtonProps) {
-    const handleAddCart = () => {
-        console.log(id);
-    };
-    return <button onClick={handleAddCart}>Add to Cart</button>;
+export function AddToCart({ product }: ButtonProps) {
+    const addItem = useCartStore((state) => state.addItem);
+
+    return <button onClick={() => addItem(product)}>Add to Cart</button>;
 }

@@ -1,21 +1,60 @@
 import { pool } from "../db/index.js";
 
-const getProducts = async (req, res) => {
+const getAllProducts = async (req, res) => {
     try {
         const result = await pool.query(`
-                SELECT * FROM products;
+            SELECT
+                p.*,
+                COALESCE(
+                    json_agg(
+                        json_build_object(
+                            'id', pi.id,
+                            'image_url', pi.image_url,
+                            'image_alt', pi.image_alt,
+                            'is_primary', pi.is_primary,
+                            'position', pi.position
+                        )
+                        ORDER BY pi.position ASC
+                    ) FILTER (WHERE pi.id IS NOT NULL),
+                    '[]'
+                ) AS images
+            FROM products p
+            LEFT JOIN product_images pi
+                ON p.id = pi.product_id
+            GROUP BY p.id;
             `);
 
         return res.status(200).json({
             success: true,
             message: "Successfully fetched all products",
-            data: JSON.stringify(result.rows),
+            data: result.rows,
         });
     } catch (e) {
         console.error("Something went wrong:", e);
         return res.status(500).json({
             success: false,
             message: "Failed to fetch all products",
+            error: e,
+        });
+    }
+};
+
+const getProduct = async (req, res) => {
+    // req.body.slug
+    const slug = req.body.slug;
+    try {
+        const result = await pool.query(`
+                SELECT * FROM products WHERE url = ${slug};
+            `);
+        return res.json({
+            success: true,
+            message: "Successfully fetched product",
+            data: result.rows[0],
+        });
+    } catch (e) {
+        console.error("Something went wrong:", e);
+        return res.status(500).json({
+            message: "Something went wrong",
             error: e,
         });
     }
@@ -29,7 +68,7 @@ const createProducts = async (req, res) => {
         for (const product of body) {
             const result = await client.query(
                 `
-                    INSERT INTO products (heading, description, price, content, url)
+                    INSERT INTO products (heading, description, price, url, content)
                     VALUES ($1, $2, $3, $4, $5)
                     RETURNING id;`,
                 [
@@ -112,4 +151,4 @@ const productTable = async (req, res) => {
     }
 };
 
-export default { getProducts, createProducts, productTable };
+export default { getAllProducts, getProduct, createProducts, productTable };

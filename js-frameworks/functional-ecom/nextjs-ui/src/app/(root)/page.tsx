@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type Products = [
     {
@@ -9,24 +10,55 @@ type Products = [
         url: string;
         featured_product: boolean;
         best_seller: boolean;
+        images: [
+            {
+                image_url: string;
+                image_alt: string;
+                is_primary: boolean;
+            },
+        ];
     },
 ];
 
 export default async function Home() {
     const res = await fetch("http://localhost:4000/api/products");
     if (!res.ok) {
-        console.error("Failed", res.status, res.statusText);
+        return console.error("Failed", res.status, res.statusText);
     }
-    const products: Products = await res.json();
+
+    const { data: products }: { data: Products } = await res.json();
 
     return (
         <section>
             <main>
-                <div className="container mx-auto h-screen">
-                    <div className="flex gap-5">
+                <div className="mt-20 max-w-300 mx-auto h-120">
+                    <h1 className="text-xl font-semibold">Products</h1>
+                    <h2 className="mt-4">
+                        Explore our list of products that suit your needs
+                    </h2>
+                    <div className="mt-10 grid grid-cols-3 gap-x-5 gap-y-12">
                         {products.map((product) => (
-                            <div key={product.heading}>
-                                <div></div>
+                            <div
+                                key={product.heading}
+                                className="border border-gray-700 rounded-lg overflow-hidden"
+                            >
+                                <div className="relative w-full h-50 bg-gray-700 rounded-lg overflow-hidden">
+                                    <Image
+                                        src={product.images[0]?.image_url}
+                                        alt="Alt text here"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="py-8 px-4 min-h-42">
+                                    <h2 className="text-lg font-semibold">
+                                        {product.heading}
+                                    </h2>
+                                    <p className="mt-4">
+                                        {product.description}
+                                    </p>
+                                    <Link href={product.url}>Learn more</Link>
+                                </div>
                             </div>
                         ))}
                     </div>

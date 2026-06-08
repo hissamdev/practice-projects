@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type Products = [
+export type Products = [
     {
         heading: string;
         description: string;

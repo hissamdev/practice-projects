@@ -3,25 +3,34 @@ import { pool } from "../db/index.js";
 const getAllProducts = async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT
-                p.*,
-                COALESCE(
-                    json_agg(
-                        json_build_object(
-                            'id', pi.id,
-                            'image_url', pi.image_url,
-                            'image_alt', pi.image_alt,
-                            'is_primary', pi.is_primary,
-                            'position', pi.position
-                        )
-                        ORDER BY pi.position ASC
-                    ) FILTER (WHERE pi.id IS NOT NULL),
-                    '[]'
-                ) AS images
-            FROM products p
-            LEFT JOIN product_images pi
-                ON p.id = pi.product_id
-            GROUP BY p.id;
+                    SELECT p.*,
+                        COALESCE(
+                            (
+                            SELECT json_agg(
+                                json_build_object(
+                                    'id', pi.id,
+                                    'image_url', pi.image_url,
+                                    'image_alt', pi.image_alt,
+                                    'is_primary', pi.is_primary,
+                                    'position', pi.position
+                                )
+                                ORDER BY pi.position
+                            ) FROM product_images pi WHERE p.id = pi.product_id
+        ),
+                             '[]'
+                        ) AS images,
+
+                        COALESCE(   
+                        (
+                            SELECT json_agg(
+                                json_build_object(
+                                    'id', ps.id,
+                                    'name', ps.name,
+                                    'value', ps.value
+                                )
+                            ) FROM product_specs ps ), '[]'
+                        ) AS specs
+                    FROM products p
             `);
 
         return res.status(200).json({
@@ -43,13 +52,25 @@ const getProduct = async (req, res) => {
     // req.body.slug
     const slug = req.body.slug;
     try {
-        const result = await pool.query(`
-                SELECT * FROM products WHERE url = ${slug};
-            `);
+        const result = await pool.query(
+            `
+                SELECT * FROM products WHERE url = $1;
+            `,
+            [slug],
+        );
+
+        if (result.rows.length === 0) {
+            return res.json({
+                success: false,
+                message: "Product not found",
+                status: 404,
+            });
+        }
+
         return res.json({
             success: true,
             message: "Successfully fetched product",
-            data: result.rows[0],
+            data: result.rows,
         });
     } catch (e) {
         console.error("Something went wrong:", e);

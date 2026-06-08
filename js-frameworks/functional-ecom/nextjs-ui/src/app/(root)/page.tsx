@@ -24,7 +24,7 @@ export default async function Home() {
                                 key={product.heading}
                                 className="border border-gray-700 rounded-lg overflow-hidden"
                             >
-                                <div className="relative w-full h-50 bg-gray-700 rounded-lg overflow-hidden">
+                                <div className="relative w-full h-50 bg-gray-700 rounded-t-lg overflow-hidden">
                                     <Image
                                         src={product.images[0]?.image_url}
                                         alt="Alt text here"

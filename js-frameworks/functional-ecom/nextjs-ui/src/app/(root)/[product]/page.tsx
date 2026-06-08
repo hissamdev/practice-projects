@@ -1,4 +1,5 @@
-import { Products } from "../page";
+import { AddToCart } from "@/src/components/Cart";
+import { Products } from "@/src/types/productTypes";
 
 export default async function Page({
     params,
@@ -18,7 +19,7 @@ export default async function Page({
         return console.error(res.status, res.statusText);
     }
     const receivedProduct = await res.json();
-    const { heading, description, price, url, content }: Products[0] =
+    const { id, heading, description, price, url, content }: Products[0] =
         receivedProduct.data[0];
 
     return (
@@ -28,6 +29,7 @@ export default async function Page({
                 <div>
                     <h1>{heading}</h1>
                     <p>{description}</p>
+                    <AddToCart id={id} />
                 </div>
             </main>
         </section>

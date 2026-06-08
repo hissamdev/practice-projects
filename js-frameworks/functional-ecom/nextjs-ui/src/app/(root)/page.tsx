@@ -1,24 +1,6 @@
+import { Products } from "@/src/types/productTypes";
 import Image from "next/image";
 import Link from "next/link";
-
-export type Products = [
-    {
-        heading: string;
-        description: string;
-        price: number;
-        content: string;
-        url: string;
-        featured_product: boolean;
-        best_seller: boolean;
-        images: [
-            {
-                image_url: string;
-                image_alt: string;
-                is_primary: boolean;
-            },
-        ];
-    },
-];
 
 export default async function Home() {
     const res = await fetch("http://localhost:4000/api/products");

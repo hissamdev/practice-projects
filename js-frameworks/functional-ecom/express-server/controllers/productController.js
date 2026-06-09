@@ -54,7 +54,19 @@ const getProduct = async (req, res) => {
     try {
         const result = await pool.query(
             `
-                SELECT * FROM products WHERE url = $1;
+                SELECT p.*,
+                    COALESCE(
+                        (
+                            SELECT json_agg(
+                                json_build_object(
+                                    'image_alt', pi.image_alt,
+                                    'image_url', pi.image_url,
+                                    'is_primary', pi.is_primary
+                                )
+                            ) FROM product_images pi WHERE p.id = pi.product_id
+                        ), '[]'
+                    ) AS images
+                FROM products p WHERE url = $1;
             `,
             [slug],
         );

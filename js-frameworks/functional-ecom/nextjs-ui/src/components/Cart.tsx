@@ -25,14 +25,21 @@ export default function Cart() {
                     const primaryImage = i.images.find(
                         (i) => i.is_primary === true,
                     );
+                    const fallbackImage = i.images[0];
                     return (
                         <div key={i.heading} className="flex justify-between">
                             <div className="flex items-center gap-5">
                                 <div className="relative w-20 h-20 shrink-0">
                                     <div>
                                         <Image
-                                            src={primaryImage?.image_url!}
-                                            alt={primaryImage?.image_alt!}
+                                            src={
+                                                primaryImage?.image_url ||
+                                                fallbackImage.image_url
+                                            }
+                                            alt={
+                                                primaryImage?.image_url ||
+                                                fallbackImage.image_url
+                                            }
                                             className="object-cover"
                                             fill
                                         />

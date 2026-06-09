@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function Home() {
     const res = await fetch("http://localhost:4000/api/products");
     if (!res.ok) {
-        return console.error("Failed", res.status, res.statusText);
+        console.error("Failed", res.status, res.statusText);
     }
 
     const { data: products }: { data: Products } = await res.json();

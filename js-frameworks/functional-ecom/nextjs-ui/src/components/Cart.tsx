@@ -22,7 +22,6 @@ export function AddToCart({ product }: ButtonProps) {
     return (
         <>
             <button onClick={() => addItem(product)}>Add to Cart</button>
-            <ToggleTheme />
         </>
     );
 }

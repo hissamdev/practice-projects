@@ -8,13 +8,16 @@ type CartProduct = Products[0] & {
 
 type CartStore = {
     items: CartProduct[];
+    showCart: boolean;
     addItem: (product: Products[0]) => void;
+    toggleCart: () => void;
 };
 
 export const useCartStore = create<CartStore>()(
     persist(
         (set, get) => ({
             items: [],
+            showCart: false,
             addItem: (product) => {
                 const cartProducts = get().items;
                 const exists = cartProducts.find((i) => i.id === product.id);
@@ -31,6 +34,12 @@ export const useCartStore = create<CartStore>()(
                         items: [...cartProducts, { ...product, qty: 1 }],
                     });
                 }
+            },
+            toggleCart: () => {
+                const prev = get().showCart;
+                set({
+                    showCart: !prev,
+                });
             },
         }),
         {

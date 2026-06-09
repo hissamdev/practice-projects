@@ -1,4 +1,4 @@
-import { AddToCart } from "@/src/components/Cart";
+import Cart, { AddToCart } from "@/src/components/Cart";
 import { Products } from "@/src/types/productTypes";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +37,7 @@ export default async function Page({
 
     return (
         <main>
-            <article className="mt-40 max-w-7xl mx-auto border border-white h-190">
+            <article className="mt-40 max-w-7xl mx-auto border border-white h-190 relative">
                 <Link href="/">Home</Link>
                 <div className="product-top flex justify-between">
                     <div className="product-top-left flex flex-col w-full max-w-[45%]">
@@ -94,6 +94,10 @@ export default async function Page({
                         </div>
                         <AddToCart product={receivedProduct} />
                     </div>
+                </div>
+
+                <div className="mt-8">
+                    <p>{content}</p>
                 </div>
             </article>
         </main>

@@ -49,9 +49,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const getProduct = async (req, res) => {
-    // req.body.slug
-    const { slug } = req.body;
-    console.log(slug, typeof slug);
+    const { slug } = req.params;
     try {
         const result = await pool.query(
             `
@@ -79,7 +77,7 @@ const getProduct = async (req, res) => {
                 status: 404,
             });
         }
-
+        console.log("Fetch product successful");
         return res.json({
             success: true,
             message: "Successfully fetched product",

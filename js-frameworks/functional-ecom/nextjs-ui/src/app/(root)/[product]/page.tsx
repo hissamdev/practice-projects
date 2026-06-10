@@ -15,7 +15,7 @@ export default async function Page({
     try {
         console.log("Sending fetch");
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/product/${product}`,
+            `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/products/${product}`,
         );
         if (!res.ok) {
             console.error(res.status, res.statusText);

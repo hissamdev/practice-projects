@@ -9,7 +9,8 @@ app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api", productRoutes);
 
-const port = 4000;
-app.listen(port, () => {
-    console.log("Express app listening on port:", port);
+const PORT = 4000;
+const HOST = "0.0.0.0";
+app.listen(PORT, HOST, () => {
+    console.log("Express app listening on port:", PORT);
 });

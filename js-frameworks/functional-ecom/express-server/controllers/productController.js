@@ -50,7 +50,8 @@ const getAllProducts = async (req, res) => {
 
 const getProduct = async (req, res) => {
     // req.body.slug
-    const slug = req.body.slug;
+    const { slug } = req.body;
+    console.log(slug, typeof slug);
     try {
         const result = await pool.query(
             `

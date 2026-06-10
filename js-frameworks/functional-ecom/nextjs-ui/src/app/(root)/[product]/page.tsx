@@ -1,4 +1,5 @@
 import { AddToCart } from "@/src/components/Cart";
+import { ToggleTheme } from "@/src/components/ui/ToggleDark";
 import { Products } from "@/src/types/productTypes";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,18 +10,21 @@ export default async function Page({
     params: Promise<{ product: string }>;
 }) {
     const { product } = await params;
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/product`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ slug: product }),
-        },
-    );
-    if (!res.ok) {
-        console.error(res.status, res.statusText);
+    console.log(typeof product);
+    let parsed = null;
+    try {
+        console.log("Sending fetch");
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/product/${product}`,
+        );
+        if (!res.ok) {
+            console.error(res.status, res.statusText);
+        }
+        parsed = await res.json();
+    } catch (e) {
+        console.error("Fetch failed:", e);
     }
-    const parsed = await res.json();
+
     const receivedProduct: Products[0] = parsed.data[0];
     const { heading, description, content, images }: Products[0] =
         parsed.data[0];
@@ -30,7 +34,7 @@ export default async function Page({
 
     return (
         <main>
-            <article className="mt-40 max-w-7xl mx-auto border border-white h-190 relative">
+            <article className="mt-40 max-w-7xl mx-auto h-190 relative">
                 <Link href="/">Home</Link>
                 <div className="product-top flex justify-between">
                     <div className="product-top-left flex flex-col w-full max-w-[45%]">
@@ -98,6 +102,7 @@ export default async function Page({
 
                 <div className="mt-8">
                     <p>{content}</p>
+                    <ToggleTheme />
                 </div>
             </article>
         </main>
